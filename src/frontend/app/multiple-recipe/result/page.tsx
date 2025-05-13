@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "../../_components/Navbar";
 import RecipeResult from "../../_components/RecipeResult";
@@ -53,7 +53,8 @@ type SuccessResponseDFS = {
 
 type ApiResponse = ErrorResponse | SuccessResponseBFS | SuccessResponseDFS;
 
-const MultiResult = () => {
+// Client component that uses useSearchParams
+function ResultContent() {
   const params = useSearchParams();
   const router = useRouter();
 
@@ -99,7 +100,6 @@ const MultiResult = () => {
           throw new Error("Invalid response format from server");
         }
         
-        // console.log("API response:", JSON.stringify(json, null, 2));
         setDebugData(json);
 
         if (json.error) {
@@ -109,10 +109,8 @@ const MultiResult = () => {
 
         const { paths, visitedNodes } = json.data;
         
-        // Log detailed information about the paths
         console.log("Received paths count:", paths?.length);
         
-        // Process paths based on algorithm
         const processedPaths = processPaths(paths, algo);
         
         setPaths(processedPaths);
@@ -221,7 +219,6 @@ const MultiResult = () => {
         </div>
 
         {paths.map((path, index) => {
-          // Add debug output for investigating this specific path
           console.log(`Path #${index + 1}:`, path);
           const hasBFSData = path.nodes && Array.isArray(path.nodes);
           const hasDFSData = path.nodes && typeof path.nodes === 'object' && !Array.isArray(path.nodes);
@@ -252,6 +249,19 @@ const MultiResult = () => {
         </button>
       </div>
     </div>
+  );
+}
+
+// Main page component with Suspense boundary
+const MultiResult = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#D6BD98]" />
+      </div>
+    }>
+      <ResultContent />
+    </Suspense>
   );
 };
 

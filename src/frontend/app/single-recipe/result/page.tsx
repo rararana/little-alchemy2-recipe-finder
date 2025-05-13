@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import RecipeResult from "../../_components/RecipeResult";
 import DFSRecipeResult from "../../_components/DFSRecipeResult";
@@ -37,7 +37,8 @@ type SuccessResponse = {
 
 type ApiResponse = ErrorResponse | SuccessResponse;
 
-const Result = () => {
+// Component yang menggunakan useSearchParams
+function ResultContent() {
   const params = useSearchParams();
   const router = useRouter();
   const element = params.get("element") || "";
@@ -196,5 +197,18 @@ const Result = () => {
     </div>
   );
 }
+
+// Main component with Suspense boundary
+const Result = () => {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#D6BD98]"></div>
+      </div>
+    }>
+      <ResultContent />
+    </Suspense>
+  );
+};
 
 export default Result;

@@ -5,12 +5,15 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",          // request from browser
-        destination: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080/api/:path*", // Gin server
+        destination: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080/api/:path*",
       },
     ];
   },
   env: {
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8080",
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

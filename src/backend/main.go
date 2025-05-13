@@ -32,9 +32,11 @@ func main() {
 	r := gin.Default()
 	r.SetTrustedProxies([]string{"127.0.0.1"})
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:3000"},
-		AllowMethods: []string{"GET"},
-		AllowHeaders: []string{"Content-Type"},
+	    AllowOrigins:     []string{"*"}, // Mengizinkan semua origin saat pengembangan
+	    AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+	    AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
+	    ExposeHeaders:    []string{"Content-Length"},
+	    AllowCredentials: true,
 	}))
 
 	// http://localhost:8080/api/recipe?element=Acid%20Rain&algo=bfs|dfs
